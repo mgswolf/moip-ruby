@@ -27,7 +27,7 @@ module MoIP
   TipoRecebimento = %w{AVista Parcelado}
   TipoRestricao = %w{Autorizacao Pagamento}
   TipoStatus = %w{Sucesso Falha}
-  
+
   #
   TiposComInstituicao = %w{CartaoCredito CartaoCredito DebitoBancario}
 
@@ -43,17 +43,17 @@ module MoIP
         raise(MissingPayerError, "É obrigatório passar as informarções do pagador") if attributes[:pagador].nil?
 
         raise(InvalidValue, "Valor deve ser maior que zero.") if attributes[:valor].to_f <= 0.0
-        raise(InvalidPhone, "Telefone deve ter o formato (99)9999-9999.") if attributes[:pagador][:tel_fixo] !~ /\(\d{2}\)?\d{4}-\d{4}/
-        raise(InvalidCellphone, "Telefone celular deve ter o formato (99)9999-9999.") if attributes[:pagador][:tel_cel] !~ /\(\d{2}\)?\d{4}-\d{4}/
+        #raise(InvalidPhone, "Telefone deve ter o formato (99)9999-9999.") if attributes[:pagador][:tel_fixo] !~ /\(\d{2}\)?\d{4}-\d{4}/
+        #raise(InvalidCellphone, "Telefone celular deve ter o formato (99)9999-9999.") if attributes[:pagador][:tel_cel] !~ /\(\d{2}\)?\d{4}-\d{4}/
 
-        raise(MissingBirthdate, "É obrigatório passar as informarções do pagador") if TiposComInstituicao.include?(attributes[:forma]) && attributes[:data_nascimento].nil?
+        #raise(MissingBirthdate, "É obrigatório passar as informarções do pagador") if TiposComInstituicao.include?(attributes[:forma]) && attributes[:data_nascimento].nil?
 
-        raise(InvalidExpiry, "Data de expiração deve ter o formato 01-00 até 12-99.") if TiposComInstituicao.include?(attributes[:forma]) && attributes[:expiracao] !~ /(1[0-2]|0\d)\/\d{2}/
+        #raise(InvalidExpiry, "Data de expiração deve ter o formato 01-00 até 12-99.") if TiposComInstituicao.include?(attributes[:forma]) && attributes[:expiracao] !~ /(1[0-2]|0\d)\/\d{2}/
 
 
-        raise(InvalidReceiving, "Recebimento é inválido. Escolha um destes: #{TipoRecebimento.join(', ')}") if !TipoRecebimento.include?(attributes[:recebimento]) && TiposComInstituicao.include?(attributes[:forma])
+        #raise(InvalidReceiving, "Recebimento é inválido. Escolha um destes: #{TipoRecebimento.join(', ')}") if !TipoRecebimento.include?(attributes[:recebimento]) && TiposComInstituicao.include?(attributes[:forma])
 
-        raise(InvalidInstitution, "A instituição #{attributes[:instituicao]} é inválida. Escolha uma destas: #{InstituicaoPagamento.join(', ')}") if  TiposComInstituicao.include?(attributes[:forma]) && !InstituicaoPagamento.include?(attributes[:instituicao])
+        #raise(InvalidInstitution, "A instituição #{attributes[:instituicao]} é inválida. Escolha uma destas: #{InstituicaoPagamento.join(', ')}") if  TiposComInstituicao.include?(attributes[:forma]) && !InstituicaoPagamento.include?(attributes[:instituicao])
 
         builder = Nokogiri::XML::Builder.new(:encoding => "UTF-8") do |xml|
 
@@ -131,21 +131,21 @@ module MoIP
               # Dados do pagador
               xml.Pagador {
                 xml.Nome { xml.text attributes[:pagador][:nome] }
-                xml.LoginMoIP { xml.text attributes[:pagador][:login_moip] }
+                xml.LoginMoIP { xml.text attributes[:pagador][:login_moip] } if attributes[:pagador][:login_moip]
                 xml.Email { xml.text attributes[:pagador][:email] }
-                xml.TelefoneCelular { xml.text attributes[:pagador][:tel_cel] }
-                xml.Apelido { xml.text attributes[:pagador][:apelido] }
-                xml.Identidade(:Tipo => "CPF") { xml.text attributes[:pagador][:identidade] }
+                xml.TelefoneCelular { xml.text attributes[:pagador][:tel_cel] } if attributes[:pagador][:tel_cel]
+                xml.Apelido { xml.text attributes[:pagador][:apelido] } if attributes[:pagador][:apelido]
+                xml.Identidade(:Tipo => "CPF") { xml.text attributes[:pagador][:identidade] } if attributes[:pagador][:identidade]
                 xml.EnderecoCobranca {
-                  xml.Logradouro { xml.text attributes[:pagador][:logradouro] }
-                  xml.Numero { xml.text attributes[:pagador][:numero] }
-                  xml.Complemento { xml.text attributes[:pagador][:complemento] }
-                  xml.Bairro { xml.text attributes[:pagador][:bairro] }
-                  xml.Cidade { xml.text attributes[:pagador][:cidade] }
-                  xml.Estado { xml.text attributes[:pagador][:estado] }
-                  xml.Pais { xml.text attributes[:pagador][:pais] }
-                  xml.CEP { xml.text attributes[:pagador][:cep] }
-                  xml.TelefoneFixo { xml.text attributes[:pagador][:tel_fixo] }
+                  xml.Logradouro { xml.text attributes[:pagador][:logradouro] } if attributes[:pagador][:logradouro]
+                  xml.Numero { xml.text attributes[:pagador][:numero] } if attributes[:pagador][:numero]
+                  xml.Complemento { xml.text attributes[:pagador][:complemento] } if attributes[:pagador][:complemento]
+                  xml.Bairro { xml.text attributes[:pagador][:bairro] } if attributes[:pagador][:bairro]
+                  xml.Cidade { xml.text attributes[:pagador][:cidade] } if attributes[:pagador][:cidade]
+                  xml.Estado { xml.text attributes[:pagador][:estado] } if attributes[:pagador][:estado]
+                  xml.Pais { xml.text attributes[:pagador][:pais] } if attributes[:pagador][:pais]
+                  xml.CEP { xml.text attributes[:pagador][:cep] } if attributes[:pagador][:cep]
+                  xml.TelefoneFixo { xml.text attributes[:pagador][:tel_fixo] } if attributes[:pagador][:tel_fixo]
                 }
               }
 
@@ -164,14 +164,14 @@ module MoIP
                   }
                 }
               end
-              
+
               if attributes[:url_retorno]
                 # URL de retorno
                 xml.URLRetorno {
                   xml.text attributes[:url_retorno]
                 }
               end
-                
+
             }
           }
         end

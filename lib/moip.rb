@@ -9,13 +9,13 @@ module MoIP
 
   class MissingPaymentTypeError < ValidationError; end
   class MissingPayerError < ValidationError; end
-  class MissingBirthdate < ValidationError; end
+  # class MissingBirthdate < ValidationError; end
 
-  class InvalidCellphone < ValidationError; end
-  class InvalidExpiry < ValidationError; end
-  class InvalidInstitution < ValidationError; end    
-  class InvalidPhone < ValidationError; end
-  class InvalidReceiving < ValidationError; end
+  # class InvalidCellphone < ValidationError; end
+  # class InvalidExpiry < ValidationError; end
+  # class InvalidInstitution < ValidationError; end
+  # class InvalidPhone < ValidationError; end
+  # class InvalidReceiving < ValidationError; end
   class InvalidValue < ValidationError; end
 
   autoload :DirectPayment, 'moip/direct_payment'
