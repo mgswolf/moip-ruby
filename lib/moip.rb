@@ -23,7 +23,7 @@ module MoIP
 
   # URI para acessar o serviço
   mattr_accessor :uri
-  @@uri = 'https://www.moip.com.br'
+  @@uri = 'https://www.moip.com.br/PagamentoMoIP.do'
 
   # Token de autenticação
   mattr_accessor :token
